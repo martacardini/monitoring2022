@@ -13,3 +13,13 @@ fishes
 # plot the diversity of fishes [Y] versus the amount of water [X]
 
 plot(water, fishes)
+
+# the data with developed can be stored in a data
+# a table in R is called data frame
+# the fonction is data.frame
+
+streams <-data.frame(water, fishes)
+streams
+
+# to visualise the table we use the fonction View 
+View(streams)
