@@ -51,8 +51,32 @@ plotRGB(l2011, r=3, g=2, b=1, stretch="Lin")
 
 plot(l2011$B2_sre)
 
+#let's change the color scheme with colorRampPalette function
 
+colorRampPalette
+cl <- colorRampPalette(c("black", "grey", "light grey"))(100)
 
+# we can change the colors
+clg <- colorRampPalette(c("dark green", "green", "light green"))(100)
+plot(l2011$B2_sre, col=clg)
 
+# do the same for the blue band B1_sre
+clb <- colorRampPalette(c("dark blue", "blue", "light blue"))(100)
+plot(l2011$B1_sre, col=clb)
 
+# how to plot the two bands together (one beside the other)
+# we use the par function
+# https://www.rdocumentation.org/packages/graphics/versions/3.6.2/topics/par
+par(mfrow=c(1,2)) #1 row, 2 columns 
+par(mfrow=c(2,2))
+
+# plot both images in one multiframe graph with 1 row and 2 columns
+par(mfrow=c(1,2)) ° the first number is the number of rows; the second number is the number of the columns
+plot(l2011$B1_sre, col=clb)
+plot(l2011$B2_sre, col=clg)
+
+# # plot both images in one multiframe graph with 2 rows, 1 column
+par(mfrow=c(2,1))
+plot(l2011$B1_sre, col=clb)
+plot(l2011$B2_sre, col=clg)
 
