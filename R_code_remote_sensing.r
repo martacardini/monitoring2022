@@ -43,7 +43,7 @@ plot(l2011, col=cl)
 
 plotRGB(l2011, r=3, g=2, b=1, stretch="Lin")
 
-#day2 (05/11/2021)
+# -----------day2 (05/11/2021)
 
 # we're gonna use the B4- NIR
 # plot the green band B2
@@ -80,7 +80,7 @@ par(mfrow=c(2,1))
 plot(l2011$B1_sre, col=clb)
 plot(l2011$B2_sre, col=clg)
 
-#day 3
+# ----------day 3
 library(raster)
 setwd("C:/lab")
 
@@ -135,3 +135,30 @@ plotRGB(l2011, r=3, g=2, b=1, stretch="Lin")
 plotRGB(l2011, r=4, g=3, b=2, stretch="Lin")
 plotRGB(l2011, r=3, g=4, b=2, stretch="Lin")
 plotRGB(l2011, r=3, g=2, b=4, stretch="Lin")
+
+# ------ day4 (last day 12/11/2021)
+
+library(raster)
+setwd("C:/lab")
+l2011 <- brick("p224r63_2011.grd")
+plotRGB(l2011, r=4, g=3, b=2, stretch= "Lin")
+
+#stretch: to visualize data. 
+#linear stretch # stretch="Lin"
+#histogram stretch: like an integral # stretch="Hist" #enhances a lot the differences from one place to the other 
+
+# importing past data
+l1988 <- brick("p224r63_1988.grd")
+
+#multiframe
+par(mfrow= c(2,1))
+plotRGB(l2011, r=4, g=3, b=2, stretch= "Lin")
+plotRGB(l1988, r=4, g=3, b=2, stretch= "Lin")
+
+#in 1988 the forest was there, and they started to build some streets and agriculture terrains.
+#now the situation is dramatic.
+
+#put NIR in the blue channel # if we do so, the agricultural areas become yellow (enlighten)
+par(mfrow= c(2,1))
+plotRGB(l2011, r=2, g=3, b=4, stretch= "Lin")
+plotRGB(l1988, r=2, g=3, b=4, stretch= "Lin")
