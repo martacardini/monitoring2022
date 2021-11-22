@@ -19,8 +19,8 @@ plotRGB(l1992, r=1, g=2, b=3, stretch="Lin")
 
 
 # defor1_.1 = NIR
-# defor1_.2 = 
-# defor1_.3 = 
+# defor1_.2 = red
+# defor1_.3 = green
 
 # change colors
 plotRGB(l1992, r=3, g=2, b=1, stretch="Lin")
@@ -37,6 +37,8 @@ plotRGB(l2006, r=1, g=2, b=3, stretch="Lin")
 par(mfrow = c(2,1))   # 2 rows 1 column
 plotRGB(l1992, r=1, g=2, b=3, stretch="Lin")
 plotRGB(l2006, r=1, g=2, b=3, stretch="Lin")
+
+# to calculate the energy loss we subtract the red layer (low reflectance in the vegetation) to the NIR layer (hight reflectance in healthy vegetation).
 
 # calculate the energy in 1992
 dev.off
@@ -67,7 +69,6 @@ cld <- colorRampPalette(c('blue','white','red'))(100)
 plot(dvidif, col= cld)
 
 # red= high level of difference in which energy has been lost, passed from a high value in 1992 to a low value in 2006
-
 
 #final plot: original images, dvis, final dvi differences.
 par(mfrow = c(3,2))
