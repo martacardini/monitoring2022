@@ -1,6 +1,10 @@
 # R code for chemical cycling study
 # time series of NO2 change in Europe during covid 
 
+#########################
+### day 1 ## 26/11/21 ###
+#########################
+
 setwd("C:/lab/en")
 library(raster)
 
@@ -82,7 +86,40 @@ plotRGB(EN, r=1, g=7, b=13, stretch ="lin")
 # blue = high values of NO2 in the last image
 # where we see yellow = constant values of NO2 during the three periods of time
 
-# differences
+#########################
+### day 2 ## 29/11/21 ###
+#########################
+
+# import all data at the same time from the en folder
+# we use lapply() function to apply a function to a list       # https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/lapply
+# first step: build a list        # list.files()      # https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/list.files
+
+library(raster)
+setwd("C:/lab/en")
+
+# pattern is the common part of all the files we want in the list. In that case it's the EN in the names
+r_list <- list.files(pattern = "EN")
+list_rast <- lapply(r_list, raster)
+EN_stack <- stack (list_rast)
+
+# we can plot all the images all together
+cl <- colorRampPalette(c('red','orange','yellow'))(100)
+plot (EN_stack, col=cl)
+
+# ex: plot only first image of the stack
+plot (EN_stack$EN_0001, col=cl)
+
+# processing the data
+# differences between the final image and the first image
+ENdif <- EN_stack$EN_0001 - EN_stack$EN_0013
+cldif <- colorRampPalette(c('blue', 'white','red'))(100)
+plot (ENdif, col = cldif)
+# the red parts are the ones with the highest variability between the two images
+
+# how to use someone's script without copy-pasting it
+# automated processing source function      # https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/source
+source("R_code_automatic_script.txt")
 
 # pairs
 pairs(EN)
+
