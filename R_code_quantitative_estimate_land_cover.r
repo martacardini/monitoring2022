@@ -17,7 +17,7 @@ setwd("C:/lab")
 
 library(raster)
 library(ggplot2)
-library(gridExtra)
+# library(gridExtra)
 library (RStoolbox) # tools for remote sensing data analysis
 
 # brick to import every layer of every image (brick import all layer of an image together)
@@ -44,7 +44,8 @@ l2006 <- list_rast[[2]]
 plotRGB(l2006, r=1, g=2, b=3, stretch = "Lin")
 
 # estimate amount of forest destroied
-# unsupervied classification, we tell to the softeare the numeber of classes we want in the end
+# unsupervied classification, we tell to the softeare the numeber of classes we want in the end  
+# https://www.rdocumentation.org/packages/RStoolbox/versions/0.2.6/topics/unsuperClass
 # take the pixels and look if there are meaningful groups
 l1992c <- unsuperClass(l1992, nClasses=2)
 l1992c # only 2 values -> one forest and one agricultural land
@@ -77,3 +78,108 @@ proportion1992 # quantitative data
 # geom_bar function explainig type of graph
 # stat - statistics used, identity bc we're using data as they are (no median or mean)
 ggplot(proportion1992, aes(x=cover, y=prop1992, color=cover)) + geom_bar(stat="identity", fill="white")
+
+
+####################
+### 06/12/2021######
+####################
+
+
+library(raster)
+library(RStoolbox) 
+library(ggplot2)
+
+setwd("C:/lab")
+
+# make a list with the files with a common pattern
+rlist <- list.files(pattern = "defor")
+
+# apply a function to all the files in the list
+list_rast <- lapply(rlist, brick)
+
+# use simple names to identify the objects in the list
+l1992 <- list_rast[[1]]
+l2006 <- list_rast[[2]]
+
+# plotRGB
+plotRGB(l1992, r=1, g=2, b=3, stretch="lin")
+
+# unsupervised classification
+l1992c <- unsuperClass(l1992, nClasses=2) # unsuperClass(x, nClasses)
+
+# we pass from a map with a spectrum of values to one with only two classes
+plot(l1992c$map)
+
+# 1 = agriculture and water
+# 2 = forest
+
+# how to calculate the frequency of the data
+freq(l1992c$map)
+
+#      value  count   ## numbers of pixels for each class
+# [1,]     1  33698   ## agriculture
+# [2,]     2 307594   ## forest
+
+# total number of pixels = 341292
+
+# calculate the proportion between the classes and the total
+
+total <- 341292 
+propagri <- 33698/total
+propforest <- 307594/total
+
+# building a dataframe with type of cover and proportion of pixels
+cover <- c("Forest", "Agriculture")
+prop1992 <- c(propforest, propagri)
+
+# build the data frame based on the variables and the proportions
+proportion1992 <- data.frame(cover, prop1992)
+ggplot(proportion1992, aes(x=cover, y=prop1992, color=cover)) + geom_bar(stat="identity", fill="white")
+
+# repeat the same for the second image
+
+# plotRGB
+plotRGB(l2006, r=1, g=2, b=3, stretch="lin")
+
+# unsupervised classification
+l2006c <- unsuperClass(l2006, nClasses=2) # unsuperClass(x, nClasses)
+
+# 1 = agriculture and water # white
+# 2 = forest                # green
+
+plot(l2006c$map)
+
+freq(l2006c$map)
+#      value  count
+# [1,]     1 164177    # agriculture and water
+# [2,]     2 178549    # forest
+
+total2006 <- 342726 
+propagri2006 <- 164177/total2006
+propforest2006 <- 164177/total2006
+
+prop2006 <- c(propagri2006, propforest2006)
+proportion <- data.frame(cover, prop1992, prop2006)
+proportion2006 <- data.frame(cover, prop2006)
+
+#ggplot
+# 1992
+ggplot(proportion1992, aes(x=cover, y=prop1992, color=cover)) + geom_bar(stat="identity", fill="white")
+
+# 2006
+ggplot(proportion2006, aes(x=cover, y=prop2006, color=cover)) + geom_bar(stat="identity", fill="white")
+
+# to put the 2 histograms one besides the others we use the package
+library(gridExtra)
+# we use the function grid.arrange ## https://cran.r-project.org/web/packages/gridExtra/vignettes/arrangeGrob.html
+
+# 1. assign a name to each ggplot
+# p1 <- ggplot(proportion1992, aes(x=cover, y=prop1992, color=cover)) + geom_bar(stat="identity", fill="white")
+# p2 <- ggplot(proportion2006, aes(x=cover, y=prop2006, color=cover)) + geom_bar(stat="identity", fill="white")
+
+# 2. use grid.arrange
+# grid.arrange (p1, p2, nrows = 2)
+
+# ggplot(proportion, aes(x=cover, y=prop2006, color=cover)) + geom_bar(stat="identity", fill="white") + ylim(0,1)
+# ggplot(proportion, aes(x=cover, y=prop1992, color=cover)) + geom_bar(stat="identity", fill="white") + ylim(0,1)
+
