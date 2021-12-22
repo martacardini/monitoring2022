@@ -1,0 +1,41 @@
+# R code for measuring community interactions 
+
+# books on stats: alain zuur, A beginner's guide to R, Anaysing ecological data (linear modelling, linear mixed models), micheal crawley, The R book.
+
+# recall all the libraries needed for the analysis
+library(raster)
+library(vegan)                  ####### https://cran.r-project.org/web/packages/vegan/vegan.pdf
+
+# setting the working directory
+setwd("C:/lab/")
+
+# importing R data from a project 
+# load function https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/load
+load ("biomes_multivar.RData")
+
+# maka a list with the ls() function: list the names of all the objects that are present in the working directory
+ls()
+
+#biomes dataset: biomes plot/species. the numebers are the number of individuals of each species for each plot. 
+biomes
+biomes_types
+
+# decorana() Detrended Correspondence Analysis. 
+multivar <- decorana(biomes)
+# the putput is a rescaling of the system in 4 x.
+# eigenvalues: the amount of values explained by the different x, the system is compacted
+
+multivar
+plot(multivar)
+
+# attaching the dataset instead of the $ every time       https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/attach
+attach(biomes_types)
+
+# let's take a look at the frouping of species. Are they iin the same biome?      https://www.rdocumentation.org/packages/vegan/versions/2.4-2/topics/ordihull
+ordiellipse(multivar, type, col=c("black", "red", "green", "blue"),kind="ehull", lwd=3)     # 4 colors for 4 different biomes
+
+# we see 4 ellipses that attach all of the plots (not all, but the smast small possible). 4 of them because we have 4 biomes
+
+#ordispider() function used 
+ordispider(multivar, type, col = c("black", "red", "green", "blue"), label = T)
+
