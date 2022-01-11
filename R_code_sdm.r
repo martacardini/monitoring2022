@@ -60,3 +60,23 @@ plot(preds$precipitation, col =cl)
 points (presences, pch= 19, col = 'green', cex = 0.5)
 
 # make a model of the distribution
+
+
+############à DAY 2 
+#importing the source script
+
+setwd('C:/lab')
+
+# function source() https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/source
+source("R_code_source_sdm.r.txt")
+
+preds
+# these are the predictors: precipitation, temperature, elevation, vegetation
+
+datasdm <- sdmData(train=species, predictors = preds)
+#class: sdmdata. 1 species (larix) column: occurrence. features:4(predictors). type of data: presence-absence
+
+# sdm function https://www.rdocumentation.org/packages/sdm/versions/1.0-89/topics/sdm 
+#make a model to calculate presence of a species 
+# y= bx + a a being intercept, b the slope, y=occurrence, x = temperature (a and b calculated by sdm); other x are elevation 
+m1 <- sdm(formula = Occurrence ~ temperature + elevation + vegetation + precipitation, data = datasdm, method = 'glm')
