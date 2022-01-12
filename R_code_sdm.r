@@ -80,3 +80,5 @@ datasdm <- sdmData(train=species, predictors = preds)
 #make a model to calculate presence of a species 
 # y= bx + a a being intercept, b the slope, y=occurrence, x = temperature (a and b calculated by sdm); other x are elevation 
 m1 <- sdm(formula = Occurrence ~ temperature + elevation + vegetation + precipitation, data = datasdm, method = 'glm')
+
+###### day 3 ###########
