@@ -1,1 +1,26 @@
 # project for the exam of Monitoring Ecosystems
+
+library(ncdf4)
+library(viridis)
+library(RStoolbox)
+library(ggplot2)
+library(raster)
+library(patchwork)
+
+setwd("C:/lab/exam")
+
+# to import the files all together
+sce <- list.files(pattern="SCE")
+
+# apply raster function to all the files 
+snowraster <- lapply(sce, raster)
+
+snowcover <- stack(snowraster)
+plot(snowcover)
+cl <- colorRampPalette(c("blue","light blue","pink","red"))(100)
+plot(snowcover, col = cl)
+
+lst <- list.files(pattern="LST")
+traster <- lapply(lst, raster)
+temp <- stack (traster)
+plot (temp)
