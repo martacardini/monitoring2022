@@ -24,3 +24,29 @@ lst <- list.files(pattern="LST")
 traster <- lapply(lst, raster)
 temp <- stack (traster)
 plot (temp)
+
+plot(snowcover, col= cl, main= "Snow Covers during years 2018-2021", names.attr= c("Jan 2018", "Jan 2019", "Jan 2020", "Jan 2021"))
+
+names(snowcover) <- c("January 2018", "January 2019", "January 2020", "January 2021")
+
+ext2 <- c(50, 150, 50, 80)
+cropped2 <- crop(snowcover, ext2)
+plot(cropped2, col=cl)
+
+#jan2018 <- snowcover$January.2018
+#jan2019 <- snowcover$January.2019
+#jan2020 <- snowcover$January.2020
+#jan2021 <- snowcover$January.2021
+
+
+jan2018 <- cropped2$January.2018
+jan2019 <- cropped2$January.2019
+jan2020 <- cropped2$January.2020
+jan2021 <- cropped2$January.2021
+
+p1 <- ggplot() + geom_raster( data= jan2018, mapping = aes(x=x, y=y, fill= January.2018)) + scale_fill_viridis(option = "mako") + ggtitle("2018")
+p2 <- ggplot() + geom_raster( data= jan2019, mapping = aes(x=x, y=y, fill= January.2019)) + scale_fill_viridis(option = "mako") + ggtitle("2019")
+p3 <- ggplot() + geom_raster( data= jan2020, mapping = aes(x=x, y=y, fill= January.2020)) + scale_fill_viridis(option = "mako") + ggtitle("2020")
+p4 <- ggplot() + geom_raster( data= jan2021, mapping = aes(x=x, y=y, fill= January.2021)) + scale_fill_viridis(option = "mako") + ggtitle("2021")
+
+p1 + p2 + p3 + p4
