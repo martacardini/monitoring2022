@@ -50,3 +50,26 @@ p3 <- ggplot() + geom_raster( data= jan2020, mapping = aes(x=x, y=y, fill= Janua
 p4 <- ggplot() + geom_raster( data= jan2021, mapping = aes(x=x, y=y, fill= January.2021)) + scale_fill_viridis(option = "mako") + ggtitle("2021")
 
 p1 + p2 + p3 + p4
+
+
+
+
+
+############## snow cover using modis data ###########
+modis_snow <- list.files(pattern = "png")
+snow_brick <- lapply(modis_snow, brick)
+names(snow_brick) <- c("feb01", "feb21", "aug01", "aug21")
+
+#plotRGB
+plotRGB
+
+SNOW <- list.files(pattern="png")
+SNOWC <- lapply(SNOW, brick)
+
+names(SNOWC) <- c("summer2001","summer2021","winter2001","winter2021")
+
+
+ggRGB(SNOWC$summer2001, r=1, g=2, b=3, stretch="lin")
+ggRGB(SNOWC$winter2001, r=1, g=2, b=3, stretch="lin")
+ggRGB(SNOWC$summer2021, r=1, g=2, b=3, stretch="lin")
+ggRGB(SNOWC$winter2021, r=1, g=2, b=3, stretch="lin")
