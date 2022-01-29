@@ -8,7 +8,7 @@ library(patchwork) # multiframe graphics
 library(rgdal) # to open shape file
 
 #set the working directory
-setwd("C:/vegetation")
+setwd("C:/lab/vegetation")
 
 #import data together 
 NDVI <- list.files(pattern="NDVI")
@@ -39,6 +39,9 @@ g2 <- ggplot() + geom_raster(data= june2020, mapping = aes(x=x, y=y, fill= Norma
 
 g1/g2
 
+NDVIdif<-june1999-june2020
+par(mfrow=c(2,2))
+plot(
 
 FCOVER <- list.files(pattern="FCOVER")
 FCOVER
@@ -50,18 +53,52 @@ FCOVERr <- lapply(FCOVER, raster)
 FCOVERr
 
 FCOVERstack <- stack(FCOVERr)
-clFC <- (colorRampPalette(c("grey","lightgreen", "green", "pink", "red"))(100)
-plot(FCOVERstack, col=clFC)
+plot(FCOVERstack)
 
 
 FCOVERcrop <- crop(FCOVERstack, ext)
-plot(FCOVERcrop, col=clFC)
+plot(FCOVERcrop)
 FCOVERcrop
 
-FCjune1999 <- FCOVERcrop$Normalized.Difference.Vegetation.Index.1KM.1
-FCjune2020 <- FCOVERcrop$Normalized.Difference.Vegetation.Index.1KM.2
+FCjune1999 <- FCOVERcrop$Fraction.of.green.Vegetation.Cover.1km.1
+FCjune2020 <- FCOVERcrop$Fraction.of.green.Vegetation.Cover.1km.2
 
-g1 <- ggplot() + geom_raster(data= FCjune1999, mapping = aes(x=x, y=y, fill= Fraction.of.green.Vegetation.Cover.1km.1)) + scale_fill_viridis(option = "magma") + ggtitle("FCjune1999")
-g2 <- ggplot() + geom_raster(data= FCjune2020, mapping = aes(x=x, y=y, fill= Fraction.of.green.Vegetation.Cover.1km.2)) + scale_fill_viridis(option = "magma") + ggtitle("FCjune2020")
+g1FC <- ggplot() + geom_raster(data= FCjune1999, mapping = aes(x=x, y=y, fill= Fraction.of.green.Vegetation.Cover.1km.1)) + scale_fill_viridis() + ggtitle("FCjune1999")
+g2FC <- ggplot() + geom_raster(data= FCjune2020, mapping = aes(x=x, y=y, fill= Fraction.of.green.Vegetation.Cover.1km.2)) + scale_fill_viridis() + ggtitle("FCjune2020")
 
-g1/g2
+g1FC/g2FC
+
+FCdif<-FCjune2020-FCjune1999
+plot(FCdif)
+par(mfrow=c(2,2))
+plot(FCjune1999)
+plot(FCjune2020)
+plot(FCdif)
+
+
+##########
+#SWI SOil water index
+# 10-20/06/2007
+# 10-20/06/2020
+
+SWI <- list.files(pattern ="SWI10")
+SWIr <- lapply(SWI, raster)
+SWIstack <- stack(SWIr)
+plot(SWIstack)
+
+swicrop <- crop(SWIstack, ext)
+plot (swicrop)
+
+africa <- c(-20, 60, -80, 40)
+swiafrica <- crop(SWIstack, africa)
+plot(swiafrica)
+
+
+#########SSM
+SSM <- list.files(pattern ="SSM")
+SSMr <- lapply(SSM, raster)
+SSMstack <- stack(SSMr)
+plot(SSMstack)
+
+
+
