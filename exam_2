@@ -1,0 +1,67 @@
+library(ncdf4) # import the copernicus file (in nc)
+library(raster) # work with raster file (single layer data)
+library(viridis) # plot the color palette
+library(RStoolbox) # useful for remote sensing image processing (make classification)
+library(ggplot2) # create graphics - ggplot function
+library(grid.Extra) # for multiframe ggplot
+library(patchwork) # multiframe graphics
+library(rgdal) # to open shape file
+
+#set the working directory
+setwd("C:/vegetation")
+
+#import data together 
+NDVI <- list.files(pattern="NDVI")
+NDVI
+#"c_gls_NDVI_199906110000_GLOBE_VGT_V2.2.1.nc"   
+#"c_gls_NDVI_202006110000_GLOBE_PROBAV_V2.2.1.nc"
+
+# apply raster function to all the files
+NDVIr <- lapply(NDVI, raster)
+NDVIr
+
+NDVIstack <- stack(NDVIr)
+plot(NDVIstack)
+cl <- colorRampPalette(c("lightgreen", "dark green", "pink", "grey"))(100)
+plot(NDVIstack, col=cl)
+
+
+ext <- c(-20, 60, 30, 80)
+NDVIcrop <- crop(NDVIstack, ext)
+plot(NDVIcrop, col=cl)
+NDVIcrop
+
+june1999 <- NDVIcrop$Normalized.Difference.Vegetation.Index.1KM.1
+june2020 <- NDVIcrop$Normalized.Difference.Vegetation.Index.1KM.2
+
+g1 <- ggplot() + geom_raster(data= june1999, mapping = aes(x=x, y=y, fill= Normalized.Difference.Vegetation.Index.1KM.1)) + scale_fill_viridis(option = "magma") + ggtitle("june1999")
+g2 <- ggplot() + geom_raster(data= june2020, mapping = aes(x=x, y=y, fill= Normalized.Difference.Vegetation.Index.1KM.2)) + scale_fill_viridis(option = "magma") + ggtitle("june2020")
+
+g1/g2
+
+
+FCOVER <- list.files(pattern="FCOVER")
+FCOVER
+
+#"c_gls_FCOVER_199905200000_GLOBE_VGT_V2.0.2.nc"       
+#"c_gls_FCOVER-RT1_202006200000_GLOBE_PROBAV_V2.0.1.nc"
+
+FCOVERr <- lapply(FCOVER, raster)
+FCOVERr
+
+FCOVERstack <- stack(FCOVERr)
+clFC <- (colorRampPalette(c("grey","lightgreen", "green", "pink", "red"))(100)
+plot(FCOVERstack, col=clFC)
+
+
+FCOVERcrop <- crop(FCOVERstack, ext)
+plot(FCOVERcrop, col=clFC)
+FCOVERcrop
+
+FCjune1999 <- FCOVERcrop$Normalized.Difference.Vegetation.Index.1KM.1
+FCjune2020 <- FCOVERcrop$Normalized.Difference.Vegetation.Index.1KM.2
+
+g1 <- ggplot() + geom_raster(data= FCjune1999, mapping = aes(x=x, y=y, fill= Fraction.of.green.Vegetation.Cover.1km.1)) + scale_fill_viridis(option = "magma") + ggtitle("FCjune1999")
+g2 <- ggplot() + geom_raster(data= FCjune2020, mapping = aes(x=x, y=y, fill= Fraction.of.green.Vegetation.Cover.1km.2)) + scale_fill_viridis(option = "magma") + ggtitle("FCjune2020")
+
+g1/g2
