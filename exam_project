@@ -7,11 +7,22 @@ library(ggplot2)
 library(raster)
 library(patchwork)
 
+#library(ncdf4) # import the copernicus file (in nc)
+#library(raster) # work with raster file (single layer data)
+#library(viridis) # plot the color palette
+#library(RStoolbox) # useful for remote sensing image processing (make classification)
+#library(ggplot2) # create graphics - ggplot function
+#library(grid.Extra) # for multiframe ggplot
+#library(patchwork) # multiframe graphics
+#library(rgdal) # to open shape file
+
+
 setwd("C:/lab/exam")
 
-############################
-#----------SCE-------------#
-############################
+
+#-------------------------------------------------------------------------------------------------------#
+#--------------------------------------------SCE--------------------------------------------------------#
+#-------------------------------------------------------------------------------------------------------#
 
 # let's import all the files about the Snow Cover Extent (SCE) from the copernicus satellite
 
@@ -50,9 +61,9 @@ p4 <- ggplot() + geom_raster( data= jan2021, mapping = aes(x=x, y=y, fill= jan_2
 
 p1 + p2 + p3 + p4
 
-#--------------------------#
-#-----------LST------------#
-#--------------------------#
+#-------------------------------------------------------------------------------------------------------#
+#--------------------------------------------LST--------------------------------------------------------#
+#-------------------------------------------------------------------------------------------------------#
 
 # let's import all the files about the Land Surface Temperature (LST) from the copernicus satellite
 lst <- list.files(pattern="LST")
@@ -71,10 +82,9 @@ plot(temp_crop, col=clt)
 
 
 
-
-#----------------------------------------------------#
-#------------- snow cover using modis data ----------#
-#----------------------------------------------------#
+#-------------------------------------------------------------------------------------------------------#
+#-----------------------------------snow cover using modis data-----------------------------------------#
+#-------------------------------------------------------------------------------------------------------#
 
 modis_snow <- list.files(pattern = "RenderData")
 snow_brick <- lapply(modis_snow, brick)
