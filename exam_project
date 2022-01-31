@@ -65,11 +65,11 @@ snow_brick <- lapply(modis_snow, brick)
 snow_brick
 names(snow_brick) <- c("feb01", "feb21", "aug01", "aug21")
 
+par(mfrow = c(2, 2))
+p1 <- ggRGB(snow_brick$aug01, r=1, g=2, b=3, stretch="lin")
+p2 <- ggRGB(snow_brick$feb01, r=1, g=2, b=3, stretch="lin")
+p3 <- ggRGB(snow_brick$aug21, r=1, g=2, b=3, stretch="lin")
+p4 <- ggRGB(snow_brick$feb21, r=1, g=2, b=3, stretch="lin")
 
-
-
-ggRGB(SNOWC$aug01, r=1, g=2, b=3, stretch="lin")
-ggRGB(SNOWC$feb01, r=1, g=2, b=3, stretch="lin")
-ggRGB(SNOWC$aug21, r=1, g=2, b=3, stretch="lin")
-ggRGB(SNOWC$feb21, r=1, g=2, b=3, stretch="lin")
+p1 + p2 + p3 + p4
 
