@@ -2,7 +2,45 @@
 # 
 
 # c_gls_BA300_202008200000_GLOBE_PROBAV_V1.1.1           # burnt area 11/08/2020 to 20/08/2020
-# c_gls_BA300_202108200000_GLOBE_S3_V1.2.1               # burnt area 11/08/2021 to 20/08/2021
+# c_gls_BA300_202108200000_GLOBE_PROBAV_V1.1.1              # burnt area 11/08/2021 to 20/08/2021
 
 # c_gls_FCOVER300-RT2_202010200000_GLOBE_OLCI_V1.1.1     # FCOVER 11/08/2020 to 20/08/2020
 # c_gls_FCOVER300-RT0_202108200000_GLOBE_OLCI_V1.1.2     # FCOVER 11/08/2021 to 20/08/2021 
+
+library(ncdf4) # import the copernicus file (in nc)
+library(raster) # work with raster file (single layer data)
+library(viridis) # plot the color palette
+library(RStoolbox) # useful for remote sensing image processing (make classification)
+library(ggplot2) # create graphics - ggplot function
+library(grid.Extra) # for multiframe ggplot
+library(patchwork) # multiframe graphics
+library(rgdal) # to open shape file
+
+#set the working directory
+setwd("C:/lab/exam")
+
+# import the burnt area data
+ba_list <- list.files(pattern = "BA300")
+
+# apply raster function to all the files
+ba_raster <- lapply(ba_list, raster)
+
+# make a stack with the raster
+BAstack <- stack(ba_raster)
+plot(BAstack)
+
+#crop the extension of Sardinia
+# longitude from 7 to 11
+# latitude from 38 to 42
+
+ext <- c(7, 11, 38, 42)
+BA_sar <- crop(BAstack, ext)
+plot(BA_sar)
+
+# unstack the needed files
+BA_2020 <- BA_sar$CP_DEKAD.1
+BA_2021 <- BA_sar$CP_DEKAD.2
+
+# make a ColorRampPalette
+cl <- colorRampPalette(c("dark red","red","pink"))(100)
+plot(BA_sar, col=cl, 
