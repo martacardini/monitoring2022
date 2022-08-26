@@ -1,11 +1,11 @@
+# R code for my Monitoring Ecosystem Changes and Functioning exam in 2022
+
+
 # in July 2021 Sadinia was devastated by wildfires
-# 
+# in this project I want to assess how the vegetation was influenced by that
 
-# c_gls_BA300_202008200000_GLOBE_PROBAV_V1.1.1           # burnt area 11/08/2020 to 20/08/2020
-# c_gls_BA300_202108200000_GLOBE_PROBAV_V1.1.1              # burnt area 11/08/2021 to 20/08/2021
-
-# c_gls_FCOVER300-RT2_202010200000_GLOBE_OLCI_V1.1.1     # FCOVER 11/08/2020 to 20/08/2020
-# c_gls_FCOVER300-RT0_202108200000_GLOBE_OLCI_V1.1.2     # FCOVER 11/08/2021 to 20/08/2021 
+# FCOVER: Fraction of vegetation cover
+# assessing how it changed from 2020 (before the fires) to 2021 (after the fires)
 
 library(ncdf4) # import the copernicus file (in nc)
 library(raster) # work with raster file (single layer data)
@@ -18,6 +18,90 @@ library(rgdal) # to open shape file
 
 #set the working directory
 setwd("C:/lab/exam")
+
+# c_gls_FCOVER300-RT2_202010200000_GLOBE_OLCI_V1.1.1     # FCOVER 11/08/2020 to 20/08/2020
+# c_gls_FCOVER300-RT0_202108200000_GLOBE_OLCI_V1.1.2     # FCOVER 11/08/2021 to 20/08/2021 
+
+# import the FCOVER data for august 2020
+sum2020 <- raster ("c_gls_FCOVER300-RT2_202010200000_GLOBE_OLCI_V1.1.1.nc")
+
+#visualize the imported image
+plot(sum2020)
+dev.off()
+
+#crop the extension of Sardinia
+# longitude from 7 to 11
+# latitude from 38 to 42
+extSAR <- c(7, 11, 38, 42)
+fcover_sar20 <- crop(sum2020, extSAR)
+plot(fcover_sar20)
+
+# the fires were concentrated in the Oristanese region on the West coast
+extor <- c(8, 9, 39, 40)
+oristano20 <- crop(fcover_sar20, extor)
+plot(oristano20)
+
+# do the same for 2021
+sum2021 <- raster ("c_gls_FCOVER300-RT0_202108200000_GLOBE_OLCI_V1.1.2.nc")
+
+#crop the extension of Sardinia
+extSAR <- c(7, 11, 38, 42)
+fcover_sar21 <- crop(sum2021, extSAR)
+plot(fcover_sar21)
+
+# the fires were concentrated in the Oristanese region on the West coast
+extor <- c(8, 9, 39, 40)
+oristano21 <- crop(fcover_sar21, extor)
+plot(oristano21)
+
+# make a ggplot using viridis to change the colors
+p1 <- ggplot( data = oristano20) + geom_raster (data = oristano20, mapping = aes(x=x, y=y, fill = Fraction.of.green.Vegetation.Cover.333m )) + scale_fill_viridis() + ggtitle ("FCOVER summer 2020 ")
+p2 <- ggplot( data = oristano21) + geom_raster (data = oristano21, mapping = aes(x=x, y=y, fill = Fraction.of.green.Vegetation.Cover.333m )) + scale_fill_viridis() + ggtitle ("FCOVER summer 2021")
+p1/p2
+
+# export this image in PNG format in the output folder
+png(file="outputs/FCOVER_Oristano_20-21.png", units="cm", width=25, height=30, res=600)
+p1 / p2
+dev.off()
+
+fcover_list <- list.files(pattern = "FCOVER300")
+
+# apply raster function to all the files
+fcover_raster <- lapply(fcover_list, raster)
+
+# make a stack with the raster
+fcover_stack <- stack(fcover_raster)
+
+#crop the extension of Sardinia
+# longitude from 7 to 11
+# latitude from 38 to 42
+
+extSAR <- c(7, 11, 38, 42)
+fcover_sar <- crop(fcover_stack, extSAR)
+plot(fcover_sar)
+
+# the fires were concentrated in the Oristanese region on the West coast
+
+extor <- c(8, 9, 39, 40)
+oristano <- crop(fcover_sar20, extor)
+plot(oristano)
+
+
+# unstack the needed files
+BA_2020 <- BA_sar$CP_DEKAD.1
+BA_2021 <- BA_sar$CP_DEKAD.2
+
+# make a ColorRampPalette
+cl <- colorRampPalette(c("dark red","red","pink"))(100)
+plot(BA_sar, col=cl, 
+
+
+
+
+
+# c_gls_BA300_202008200000_GLOBE_PROBAV_V1.1.1              # burnt area 11/08/2020 to 20/08/2020
+# c_gls_BA300_202108200000_GLOBE_PROBAV_V1.1.1              # burnt area 11/08/2021 to 20/08/2021
+
 
 # import the burnt area data
 ba_list <- list.files(pattern = "BA300")
