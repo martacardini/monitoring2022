@@ -1,10 +1,11 @@
-# R code for my Monitoring Ecosystem Changes and Functioning exam in 2022
+# R code for my Monitoring Ecosystem Changes and Functioning exam - AY 2021-2022
 
 
 # in July 2021 Sadinia was devastated by wildfires
-# in this project I want to assess how the vegetation was influenced by that
+# in this project I want to assess how the vegetation cover in the affected area was influenced by that
 
 # FCOVER: Fraction of vegetation cover
+# Using Copernicus data: FCOVER 300m V1
 # assessing how it changed from 2020 (before the fires) to 2021 (after the fires)
 
 library(ncdf4) # import the copernicus file (in nc)
@@ -29,7 +30,7 @@ sum2020 <- raster ("c_gls_FCOVER300-RT2_202010200000_GLOBE_OLCI_V1.1.1.nc")
 plot(sum2020)
 dev.off()
 
-#crop the extension of Sardinia
+#crop the extension of Sardinia using the crop() function
 # longitude from 7 to 11
 # latitude from 38 to 42
 extSAR <- c(7, 11, 38, 42)
@@ -44,12 +45,12 @@ plot(oristano20)
 # do the same for 2021
 sum2021 <- raster ("c_gls_FCOVER300-RT0_202108200000_GLOBE_OLCI_V1.1.2.nc")
 
-#crop the extension of Sardinia
+# crop the extension of Sardinia
 extSAR <- c(7, 11, 38, 42)
 fcover_sar21 <- crop(sum2021, extSAR)
 plot(fcover_sar21)
 
-# the fires were concentrated in the Oristanese region on the West coast
+# crop the wildfires hotspot extension 
 extor <- c(8, 9, 39, 40)
 oristano21 <- crop(fcover_sar21, extor)
 plot(oristano21)
@@ -64,6 +65,11 @@ png(file="outputs/FCOVER_Oristano_20-21.png", units="cm", width=25, height=30, r
 p1 / p2
 dev.off()
 
+
+# let's see if the situation changed in summer 2022
+# using data from the beginning of august     # c_gls_FCOVER300-RT1_202208100000_GLOBE_OLCI_V1.1.2.nc    #data from 01/08/2022 to 10/08/2022
+
+# import all the FCOVER files together
 fcover_list <- list.files(pattern = "FCOVER300")
 
 # apply raster function to all the files
@@ -72,59 +78,139 @@ fcover_raster <- lapply(fcover_list, raster)
 # make a stack with the raster
 fcover_stack <- stack(fcover_raster)
 
-#crop the extension of Sardinia
-# longitude from 7 to 11
-# latitude from 38 to 42
+#crop the extension of Oristanese region
+fcover_or <- crop(fcover_stack, extor)
+fcover_or 
+names(fcover_or) <- c("AUG_2021", "AUG_2022", "AUG_2020")
 
-extSAR <- c(7, 11, 38, 42)
-fcover_sar <- crop(fcover_stack, extSAR)
-plot(fcover_sar)
+# plot the stack with custom palette
+cl <- colorRampPalette (c("brown", "yellow", "#009900"))(100)
+plot(fcover_or, col = cl, main = c("AUG 2021", "AUG 2022", "AUG 2020"))
 
-# the fires were concentrated in the Oristanese region on the West coast
-
-extor <- c(8, 9, 39, 40)
-oristano <- crop(fcover_sar20, extor)
-plot(oristano)
-
-
-# unstack the needed files
-BA_2020 <- BA_sar$CP_DEKAD.1
-BA_2021 <- BA_sar$CP_DEKAD.2
-
-# make a ColorRampPalette
-cl <- colorRampPalette(c("dark red","red","pink"))(100)
-plot(BA_sar, col=cl, 
+# export this image in PNG format in the output folder
+png(file="outputs/FCOVER_Oristano_20-21-22.png", units="cm", width=25, height=30, res=600)
+plot(fcover_or, col = cl, main = c("AUG 2021", "AUG 2022", "AUG 2020"))
+dev.off()
 
 
+# calculate the difference between 2020 and 2021
+fcover_diff <- oristano20 - oristano21
+cldiff <- colorRampPalette(c("green", "yellow", "red"))(100)
+plot(fcover_diff, col = cldiff)
+
+# in red we observe the maximum differece, the areas where we had the greatest loss in vegetation cover.
+
+#export in PNG format
+png(file="outputs/FCOVER_difference_2020-2021.png", units="cm", width=25, height=30, res=600)
+plot(fcover_diff, col = cldiff)
+dev.off()
+
+
+##### quantitative analysis of the loss in vegtation cover ####
+# unsupervised classification
+
+aug20 <- unsuperClass(oristano20, nClasses=2)
+aug20     
+#see the details -> we have only 2 values now 
+# value 1: low vegetation cover 
+# value 2: high vegetation cover
+plot(aug20$map)
+
+aug21 <- unsuperClass(oristano21, nClasses=2)
+aug21
+plot(aug21$map)
+
+# we can plot the unsupervised classification together with the original map to see the correspondance of part of the burned area with the #1 value and the vegetation with the #2 value
+
+par(mfrow=c(2,2))
+plot(aug20$map, main = "August 2020")
+plot(oristano20, col = cl, main = "FCover August 2020")
+plot(aug21$map, main = "August 2021")
+plot(oristano21, col = cl, main = "FCover August 2021")
+
+#save as PNG
+png(file="outputs/Unsupervised_class_20-21.png", units="cm", width=25, height=30, res=600)
+par(mfrow=c(2,2))
+plot(aug20$map, main = "August 2020")
+plot(oristano20, col = cl, main = "FCover August 2020")
+plot(aug21$map, main = "August 2021")
+plot(oristano21, col = cl, main = "FCover August 2021")
+dev.off()
+
+# measure of the percentage of vegetation and burned area (number of pixels)
+# calculate the frequencies of our map for august 2020
+freq(aug20$map)
+
+#1 = 33247
+#2 = 28493
+# NA = 51156  --> the sea
+# total = ncell-51156 = 112896 - 51156 = 61740
+
+total2020 <- 61740 #the total amount of pixels
+
+# compute percentage of land with different vegetation cover
+propburned20 <- 33247/total2020
+propveg20 <- 28493/total2020
+
+propburned20
+# 0.5385002 --> 54%
+propveg20
+# 0.4614998 --> 46%
+
+# building a dataframe with type of cover and proportion of pixels
+cover <- c("Vegetation", "No vegetation")
+prop2020 <- c(0.4614998, 0.53850026)
+proportion2020 <- data.frame(cover, prop2020) # proportion of pixels in 2020
+proportion2020 # quantitative data
+
+# plotting data with ggplot2
+# ggplot function -> first argument = dataset, other arguments = aesthetic, color stored in cover
+# geom_bar function explainig type of graph
+# stat - statistics used, identity bc we're using data as they are (no median or mean)
+ggplot(proportion2020, aes(x=cover, y=prop2020, color=cover)) + geom_bar(stat="identity", fill="white")
+
+
+# calculate the frequencies of our map for august 2021
+freq(aug21$map)
+
+#1 = 38926
+#2 = 22437
+#NA = 51533 --> the sea
+# total = ncell-NA = 112896 - 51533 = 61363
+
+total2021 <- 61363
+
+# compute percentage of land with different vegetation cover
+propburned21 <- 38926/total2021
+propveg21 <- 22437/total2021
+
+propburned21
+# 0.6343562 = 63%
+propveg21
+# 0.3656438 = 37%
+
+# building a dataframe with type of cover and proportion of pixels
+cover <- c("Vegetation", "No vegetation")
+prop2021 <- c(0.3656438, 0.6343562)
+proportion2021 <- data.frame(cover, prop2021) # proportion of pixels in 2021
+proportion2021
+
+# plotting data with ggplot2
+ggplot(proportion2021, aes(x=cover, y=prop2021, color=cover)) + geom_bar(stat="identity", fill="white")
+
+# put the 2 histograms together using Patchwork package
+h2020 <- ggplot(proportion2020, aes(x=cover, y=prop2020, color=cover)) + geom_bar(stat="identity", fill="white") + ylim(0,1)
+h2021 <- ggplot(proportion2021, aes(x=cover, y=prop2021, color=cover)) + geom_bar(stat="identity", fill="white") + ylim(0,1)
+h2020 + h2021
+
+# to do the same thing we can also use the function grid.arrange from gridExtra package
+# grid.arrange (h2020, h2021, nrow = 1)
+
+# export as PNG
+png(file="outputs/Proportions_land20-21.png", units="cm", width=50, height=30, res=600)
+h2020 + h2021
+dev.off()
 
 
 
-# c_gls_BA300_202008200000_GLOBE_PROBAV_V1.1.1              # burnt area 11/08/2020 to 20/08/2020
-# c_gls_BA300_202108200000_GLOBE_PROBAV_V1.1.1              # burnt area 11/08/2021 to 20/08/2021
 
-
-# import the burnt area data
-ba_list <- list.files(pattern = "BA300")
-
-# apply raster function to all the files
-ba_raster <- lapply(ba_list, raster)
-
-# make a stack with the raster
-BAstack <- stack(ba_raster)
-plot(BAstack)
-
-#crop the extension of Sardinia
-# longitude from 7 to 11
-# latitude from 38 to 42
-
-ext <- c(7, 11, 38, 42)
-BA_sar <- crop(BAstack, ext)
-plot(BA_sar)
-
-# unstack the needed files
-BA_2020 <- BA_sar$CP_DEKAD.1
-BA_2021 <- BA_sar$CP_DEKAD.2
-
-# make a ColorRampPalette
-cl <- colorRampPalette(c("dark red","red","pink"))(100)
-plot(BA_sar, col=cl, 
