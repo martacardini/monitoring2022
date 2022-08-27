@@ -127,6 +127,7 @@ plot(aug20$map, main = "August 2020")
 plot(oristano20, col = cl, main = "FCover August 2020")
 plot(aug21$map, main = "August 2021")
 plot(oristano21, col = cl, main = "FCover August 2021")
+dev.off()
 
 #save as PNG
 png(file="outputs/Unsupervised_class_20-21.png", units="cm", width=25, height=30, res=600)
@@ -216,12 +217,73 @@ dev.off()
 
 
 ## does the Land surface temperature - LST -change during the fires?
-# c_gls_LST10-DC_202108110000_GLOBE_GEO_V2.0.1 # from 11/08/2021 to 20/08/2021
+
+# using Land Surface Temperature - 10-daily LST Daily Cycle Global V1 from Copernicus
+
+# c_gls_LST10-DC_202007210000_GLOBE_GEO_V1.2.1 data from 21/07/2020 to 31/07/2020
+# c_gls_LST10-DC_202107210000_GLOBE_GEO_V2.0.1 data from 21/07/2021 to 31/07/2021   # part of the period in which the Montiferru forest was burning
+
+# import the data from 2020
+LST20 <- raster("c_gls_LST10-DC_202007210000_GLOBE_GEO_V1.2.1.nc")
+
+# crop to the area of sardinia
+# extSAR <- c(7, 11, 38, 42)
+
+LST20_sar <- crop(LST20, extSAR)
+plot(LST20_sar)
+
+# crop to the area of the region under study
+# extor <- c(8.2, 9.2, 39.7, 40.6)
+LST20_or <- crop(LST20, extor)
+
+plot(LST20_or)
 
 
+# import data from 2021 
+LST21 <- raster("c_gls_LST10-DC_202107210000_GLOBE_GEO_V2.0.1.nc")
 
+# crop to the area of sardinia
+# extSAR <- c(7, 11, 38, 42)
 
+LST21_sar <- crop(LST21, extSAR)
+plot(LST21_sar)
 
+# crop to the area of the region under study
+# extor <- c(8.2, 9.2, 39.7, 40.6)
+LST21_or <- crop(LST21, extor)
 
+plot(LST21_or)
 
+# visualise the 2 maps together wit a custom color ramp palette
+cl_lst <- colorRampPalette(c("Black", "Red", "Pink")) (100)
+
+par(mfrow = c(1,2))
+plot(LST20_or, col = cl_lst, main = "LST in Montiferru, July 2020")
+plot(LST21_or, col = cl_lst, main = "LST in Montiferru, July 2021")
+dev.off()
+
+# ggplot the images:
+# 2020
+pt1 <- ggplot() + geom_raster (LST20_or, mapping=aes(x=x, y=y, fill=Fraction.of.Valid.Observations )) + 
+scale_fill_viridis( option = "magma") + ggtitle ("LST in 2020")
+
+# 2021
+pt2 <- ggplot() + geom_raster (LST21_or, mapping=aes(x=x, y=y, fill=Fraction.of.Valid.Observations )) + 
+scale_fill_viridis( option = "magma") + ggtitle ("LST in 2021")
+
+#plot the 2 images together
+pt1/pt2
+
+# export as PNG
+png(file="outputs/LST_2020-2021.png", units="cm", width=30, height=50, res=600)
+pt1/pt2
+dev.off()
+
+# lets plot the Fcover and the LST data together using Patchwork
+(p1 | p2) / (pt1 | pt2)
+
+# export this image
+png(file="outputs/LST_Fcover_2020-2021.png", units="cm", width=60, height=40, res=600)
+(p1 | p2) / (pt1 | pt2)
+dev.off()
 
