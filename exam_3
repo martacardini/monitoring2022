@@ -38,7 +38,7 @@ fcover_sar20 <- crop(sum2020, extSAR)
 plot(fcover_sar20)
 
 # the fires were concentrated in the Oristanese region on the West coast
-extor <- c(8, 9, 39, 40)
+extor <- c(8.2, 9.2, 39.7, 40.6)
 oristano20 <- crop(fcover_sar20, extor)
 plot(oristano20)
 
@@ -51,7 +51,7 @@ fcover_sar21 <- crop(sum2021, extSAR)
 plot(fcover_sar21)
 
 # crop the wildfires hotspot extension 
-extor <- c(8, 9, 39, 40)
+extor <- c(8.2, 9.2, 39.7, 40.6)
 oristano21 <- crop(fcover_sar21, extor)
 plot(oristano21)
 
@@ -112,8 +112,8 @@ dev.off()
 aug20 <- unsuperClass(oristano20, nClasses=2)
 aug20     
 #see the details -> we have only 2 values now 
-# value 1: low vegetation cover 
-# value 2: high vegetation cover
+# value 2: low vegetation cover 
+# value 1: high vegetation cover
 plot(aug20$map)
 
 aug21 <- unsuperClass(oristano21, nClasses=2)
@@ -140,26 +140,27 @@ dev.off()
 # measure of the percentage of vegetation and burned area (number of pixels)
 # calculate the frequencies of our map for august 2020
 freq(aug20$map)
+aug20       #observe ncell to have the total number of pixels
+#1 = 54975       # high vegetation land
+#2 = 21619       # low vegetation land
+# NA = 24878     # the sea
+# total = ncell-NA = 101472 - 24878 = 76594
 
-#1 = 33247
-#2 = 28493
-# NA = 51156  --> the sea
-# total = ncell-51156 = 112896 - 51156 = 61740
 
-total2020 <- 61740 #the total amount of pixels
+total2020 <- 76594 #the total amount of pixels
 
 # compute percentage of land with different vegetation cover
-propburned20 <- 33247/total2020
-propveg20 <- 28493/total2020
+propburned20 <- 21619/total2020
+propveg20 <- 54975/total2020
 
 propburned20
-# 0.5385002 --> 54%
+# 0.2822545 --> 28%         # % of low vegtation
 propveg20
-# 0.4614998 --> 46%
+# 0.7177455 --> 72%         # % of high vegetation
 
 # building a dataframe with type of cover and proportion of pixels
 cover <- c("Vegetation", "No vegetation")
-prop2020 <- c(0.4614998, 0.53850026)
+prop2020 <- c(0.7177455, 0.2822545)
 proportion2020 <- data.frame(cover, prop2020) # proportion of pixels in 2020
 proportion2020 # quantitative data
 
@@ -172,26 +173,27 @@ ggplot(proportion2020, aes(x=cover, y=prop2020, color=cover)) + geom_bar(stat="i
 
 # calculate the frequencies of our map for august 2021
 freq(aug21$map)
+aug21
 
-#1 = 38926
-#2 = 22437
-#NA = 51533 --> the sea
-# total = ncell-NA = 112896 - 51533 = 61363
+#1 = 26667   # high veg
+#2 = 44594   # low veg
+#NA = 30211 --> the sea
+# total = ncell-NA = 101472 - 30211 = 71261
 
-total2021 <- 61363
+total2021 <- 71261
 
 # compute percentage of land with different vegetation cover
-propburned21 <- 38926/total2021
-propveg21 <- 22437/total2021
+propburned21 <- 44594/total2021
+propveg21 <- 26667/total2021
 
 propburned21
-# 0.6343562 = 63%
+# 0.6257841 = 63%
 propveg21
-# 0.3656438 = 37%
+# 0.3742159 = 37%
 
 # building a dataframe with type of cover and proportion of pixels
 cover <- c("Vegetation", "No vegetation")
-prop2021 <- c(0.3656438, 0.6343562)
+prop2021 <- c(0.3742159, 0.6257841)
 proportion2021 <- data.frame(cover, prop2021) # proportion of pixels in 2021
 proportion2021
 
@@ -210,6 +212,15 @@ h2020 + h2021
 png(file="outputs/Proportions_land20-21.png", units="cm", width=50, height=30, res=600)
 h2020 + h2021
 dev.off()
+
+
+
+## does the Land surface temperature - LST -change during the fires?
+# c_gls_LST10-DC_202108110000_GLOBE_GEO_V2.0.1 # from 11/08/2021 to 20/08/2021
+
+
+
+
 
 
 
