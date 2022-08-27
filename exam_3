@@ -1,7 +1,7 @@
 # R code for my Monitoring Ecosystem Changes and Functioning exam - AY 2021-2022
 
 
-# in July 2021 Sadinia was devastated by wildfires
+# in July 2021 Sadinia (Montiferru, north of Oristano) was devastated by wildfires
 # in this project I want to assess how the vegetation cover in the affected area was influenced by that
 
 # FCOVER: Fraction of vegetation cover
@@ -216,7 +216,7 @@ dev.off()
 
 
 
-## does the Land surface temperature - LST -change during the fires?
+##### Analysis of Land surface temperature - LST - during the fires
 
 # using Land Surface Temperature - 10-daily LST Daily Cycle Global V1 from Copernicus
 
@@ -286,4 +286,37 @@ dev.off()
 png(file="outputs/LST_Fcover_2020-2021.png", units="cm", width=60, height=40, res=600)
 (p1 | p2) / (pt1 | pt2)
 dev.off()
+
+# difference 2020 vs 2021
+diff_LST <- LST20_or - LST21_or
+plot(diff_LST, col = cldiff, main = "Difference in LST - 2020-2021")
+
+# we observe that the maximum difference corresponds to the area of the Montiferru forest
+
+# plotting the frequency distribution of LST values using histograms
+par(mfrow=c(1,2))
+hist(LST20_or, xlab = "LST values in 2020", ylab = "frequency", xlim = c(0.5, 1), ylim = c(0, 300))
+hist(LST21_or, xlab = "LST values in 2021", ylab = "frequency", xlim = c(0.5, 1), ylim = c(0, 300))
+dev.off()
+
+# export as PNG
+png(file="outputs/LST_frequencies_2020-2021.png", units="cm", width=40, height=40, res=600)
+par(mfrow=c(1,2))
+hist(LST20_or, xlab = "LST values in 2020", ylab = "frequency", xlim = c(0.5, 1), ylim = c(0, 300))
+hist(LST21_or, xlab = "LST values in 2021", ylab = "frequency", xlim = c(0.5, 1), ylim = c(0, 300))
+dev.off()
+
+# regression line
+plot(LST20_or, LST21_or, pch =19, col = "blue", xlab = "LST in 2020", ylab = "LST in 2021")
+abline(0,1, col="red")
+dev.off()
+
+#export as PNG
+png(file="outputs/LST_scatterplot_2020-2021.png", units="cm", width=40, height=40, res=600)
+plot(LST20_or, LST21_or, pch =19, col = "blue", xlab = "LST in 2020", ylab = "LST in 2021")
+abline(0,1, col="red")
+dev.off()
+
+# we can have the frequency and regression lines all together automatically with the function pairs()
+
 
