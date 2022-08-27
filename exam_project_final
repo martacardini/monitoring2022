@@ -93,6 +93,10 @@ plot(fcover_or, col = cl, main = c("AUG 2021", "AUG 2022", "AUG 2020"))
 dev.off()
 
 
+##################### frequency and scatterplot + pairs()!!!
+
+
+
 # calculate the difference between 2020 and 2021
 fcover_diff <- oristano20 - oristano21
 cldiff <- colorRampPalette(c("green", "yellow", "red"))(100)
