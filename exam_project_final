@@ -15,7 +15,7 @@ library(RStoolbox) # useful for remote sensing image processing (make classifica
 library(ggplot2) # create graphics - ggplot function
 library(grid.Extra) # for multiframe ggplot
 library(patchwork) # multiframe graphics
-library(rgdal) # to open shape file
+# brary(rgdal) # to open shape file
 
 #set the working directory
 setwd("C:/lab/exam")
@@ -37,7 +37,7 @@ extSAR <- c(7, 11, 38, 42)
 fcover_sar20 <- crop(sum2020, extSAR)
 plot(fcover_sar20)
 
-# the fires were concentrated in the Oristanese region on the West coast
+# the fires were concentrated in the Montiferru/Oristanese region on the West coast
 extor <- c(8.2, 9.2, 39.7, 40.6)
 oristano20 <- crop(fcover_sar20, extor)
 plot(oristano20)
@@ -65,7 +65,6 @@ png(file="outputs/FCOVER_Oristano_20-21.png", units="cm", width=25, height=30, r
 p1 / p2
 dev.off()
 
-
 # let's see if the situation changed in summer 2022
 # using data from the beginning of august     # c_gls_FCOVER300-RT1_202208100000_GLOBE_OLCI_V1.1.2.nc    #data from 01/08/2022 to 10/08/2022
 
@@ -92,10 +91,32 @@ png(file="outputs/FCOVER_Oristano_20-21-22.png", units="cm", width=25, height=30
 plot(fcover_or, col = cl, main = c("AUG 2021", "AUG 2022", "AUG 2020"))
 dev.off()
 
+# plotting the frequency distribution of FCOVER values using histograms
+par(mfrow=c(1,2))
+hist(fcover_or$AUG_2020, xlab = "FCOVER values in 2020", ylab = "frequency", xlim = c(0, 1), ylim = c(0, 20000))
+hist(fcover_or$AUG_2021, xlab = "FCOVER values in 2021", ylab = "frequency", xlim = c(0, 1), ylim = c(0, 20000))
+dev.off()
 
-##################### frequency and scatterplot + pairs()!!!
+# export as PNG
+png(file="outputs/FCOVER_frequencies_2020-2021.png", units="cm", width=40, height=40, res=600)
+par(mfrow=c(1,2))
+hist(fcover_or$AUG_2020, xlab = "FCOVER values in 2020", ylab = "frequency", xlim = c(0, 1), ylim = c(0, 20000))
+hist(fcover_or$AUG_2021, xlab = "FCOVER values in 2021", ylab = "frequency", xlim = c(0, 1), ylim = c(0, 20000))
+dev.off()
 
+# regression line
+plot(fcover_or$AUG_2020, fcover_or$AUG_2021, pch =20, col = "blue", xlab = "FCOVER in 2020", ylab = "FCOVER in 2021")
+abline(0,1, col="red")
+dev.off()
 
+#export as PNG
+png(file="outputs/FCOVER_scatterplot_2020-2021.png", units="cm", width=40, height=40, res=600)
+plot(fcover_or$AUG_2020, fcover_or$AUG_2021, pch =20, col = "blue", xlab = "FCOVER in 2020", ylab = "FCOVER in 2021")
+abline(0,1, col="red")
+dev.off()
+
+# we can have the frequency and regression lines all together automatically with the function pairs()
+pairs(fcover_or)
 
 # calculate the difference between 2020 and 2021
 fcover_diff <- oristano20 - oristano21
@@ -124,7 +145,7 @@ aug21 <- unsuperClass(oristano21, nClasses=2)
 aug21
 plot(aug21$map)
 
-# we can plot the unsupervised classification together with the original map to see the correspondance of part of the burned area with the #1 value and the vegetation with the #2 value
+# we can plot the unsupervised classification together with the original map to see the correspondance of part of the burned area with the #2 value and the vegetation with the #1 value
 
 par(mfrow=c(2,2))
 plot(aug20$map, main = "August 2020")
@@ -321,6 +342,26 @@ plot(LST20_or, LST21_or, pch =19, col = "blue", xlab = "LST in 2020", ylab = "LS
 abline(0,1, col="red")
 dev.off()
 
-# we can have the frequency and regression lines all together automatically with the function pairs()
+# Burned area analysis
 
+#import the data
+BA_list <- list.files(pattern = "BA")
 
+# apply raster function to all the files
+BA_raster <- lapply(BA_list, raster)
+
+# make a stack with the raster
+BA_stack <- stack(BA_raster)
+
+#crop to thee extension of Sardinia
+BA_sar <- crop(BA_stack, extSAR)
+plot(BA_sar)
+
+# difference?
+diffBA <- BA_sar$CP_DEKAD.1 - BA_sar$CP_DEKAD.2   # 2020 - 2021
+plot(diffBA)
+#crop the extension of Oristanese region
+BA_or <- crop(BA_stack, extor)
+
+# plot the BA maps
+plot (BA_or)
