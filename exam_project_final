@@ -44,7 +44,7 @@ plot(fcover_sar20)
 # the fires were concentrated in the Montiferru/Oristanese region on the West coast
 # crop the area interested by the 2021 wildfires
 extor <- c(8.2, 9.2, 39.7, 40.6)
-oristano20 <- crop(fcover_sar20, extor)
+oristano20 <- crop(sum2020, extor)
 plot(oristano20)
 
 # do the same for FCOVER of august 2021
