@@ -4,9 +4,6 @@
 # in July 2021 Sadinia (Montiferru, north of Oristano) was devastated by wildfires
 # in this project I want to assess how the vegetation cover in the affected area was influenced by that
 
-# FCOVER: Fraction of vegetation cover
-# Using Copernicus data: FCOVER 300m V1
-# assessing how it changed from 2020 (before the fires) to 2021 (after the fires)
 
 library(ncdf4) # import the copernicus file (in nc)
 library(raster) # work with raster file (single layer data)
@@ -17,9 +14,16 @@ library(grid.Extra) # for multiframe ggplot
 library(patchwork) # multiframe graphics
 # brary(rgdal) # to open shape file
 
-#set the working directory
+#seting the working directory
 setwd("C:/lab/exam")
 
+# Analysis of the FCOVER
+# FCOVER: Fraction of vegetation cover --> the fraction of ground covered by green vegetation/ the spatial extent of the vegetation.
+# Using Copernicus data: FCOVER 300m V1 - Sentinel-3/OLCI, PROBA-V
+
+# Assessing how it changed from 2020 (before the fires) to 2021 (after the fires)
+
+# the data I downloaded:
 # c_gls_FCOVER300-RT2_202010200000_GLOBE_OLCI_V1.1.1     # FCOVER 11/08/2020 to 20/08/2020
 # c_gls_FCOVER300-RT0_202108200000_GLOBE_OLCI_V1.1.2     # FCOVER 11/08/2021 to 20/08/2021 
 
@@ -30,7 +34,7 @@ sum2020 <- raster ("c_gls_FCOVER300-RT2_202010200000_GLOBE_OLCI_V1.1.1.nc")
 plot(sum2020)
 dev.off()
 
-#crop the extension of Sardinia using the crop() function
+# crop the extension of Sardinia using the crop() function
 # longitude from 7 to 11
 # latitude from 38 to 42
 extSAR <- c(7, 11, 38, 42)
@@ -38,11 +42,12 @@ fcover_sar20 <- crop(sum2020, extSAR)
 plot(fcover_sar20)
 
 # the fires were concentrated in the Montiferru/Oristanese region on the West coast
+# crop the area interested by the 2021 wildfires
 extor <- c(8.2, 9.2, 39.7, 40.6)
 oristano20 <- crop(fcover_sar20, extor)
 plot(oristano20)
 
-# do the same for 2021
+# do the same for FCOVER of august 2021
 sum2021 <- raster ("c_gls_FCOVER300-RT0_202108200000_GLOBE_OLCI_V1.1.2.nc")
 
 # crop the extension of Sardinia
@@ -118,6 +123,8 @@ dev.off()
 # we can have the frequency and regression lines all together automatically with the function pairs()
 pairs(fcover_or)
 
+# 
+summary (fcover_or$AUG_2020)
 # calculate the difference between 2020 and 2021
 fcover_diff <- oristano20 - oristano21
 cldiff <- colorRampPalette(c("green", "yellow", "red"))(100)
@@ -331,14 +338,14 @@ hist(LST20_or, xlab = "LST values in 2020", ylab = "frequency", xlim = c(0.5, 1)
 hist(LST21_or, xlab = "LST values in 2021", ylab = "frequency", xlim = c(0.5, 1), ylim = c(0, 300))
 dev.off()
 
-# regression line
-plot(LST20_or, LST21_or, pch =19, col = "blue", xlab = "LST in 2020", ylab = "LST in 2021")
+# scatterplot and regression line
+plot(LST20_or, LST21_or, pch =19, cex = 1.5, col = "blue", xlab = "LST in 2020", ylab = "LST in 2021")
 abline(0,1, col="red")
 dev.off()
 
 #export as PNG
-png(file="outputs/LST_scatterplot_2020-2021.png", units="cm", width=40, height=40, res=600)
-plot(LST20_or, LST21_or, pch =19, col = "blue", xlab = "LST in 2020", ylab = "LST in 2021")
+png(file="outputs/LST_scatterplot_2020-2021.png", units="cm", width=30, height=30, res=600)
+plot(LST20_or, LST21_or, pch =19, cex = 1.5, col = "blue", xlab = "LST in 2020", ylab = "LST in 2021")
 abline(0,1, col="red")
 dev.off()
 
