@@ -61,14 +61,34 @@ oristano21 <- crop(fcover_sar21, extor)
 plot(oristano21)
 
 # make a ggplot using viridis to change the colors
-p1 <- ggplot( data = oristano20) + geom_raster (data = oristano20, mapping = aes(x=x, y=y, fill = Fraction.of.green.Vegetation.Cover.333m )) + scale_fill_viridis() + ggtitle ("FCOVER summer 2020 ")
-p2 <- ggplot( data = oristano21) + geom_raster (data = oristano21, mapping = aes(x=x, y=y, fill = Fraction.of.green.Vegetation.Cover.333m )) + scale_fill_viridis() + ggtitle ("FCOVER summer 2021")
+p1 <- ggplot(data = oristano20) + 
+geom_raster (data = oristano20, mapping = aes(x=x, y=y, fill = Fraction.of.green.Vegetation.Cover.333m )) + 
+scale_fill_viridis() + ggtitle ("FCOVER summer 2020 ")
+
+p2 <- ggplot(data = oristano21) + 
+geom_raster (data = oristano21, mapping = aes(x=x, y=y, fill = Fraction.of.green.Vegetation.Cover.333m )) + 
+scale_fill_viridis() + ggtitle ("FCOVER summer 2021")
+
 p1/p2
 
 # export this image in PNG format in the output folder
 png(file="outputs/FCOVER_Oristano_20-21.png", units="cm", width=25, height=30, res=600)
 p1 / p2
 dev.off()
+
+
+# calculate the difference between 2020 and 2021
+fcover_diff <- oristano20 - oristano21
+cldiff <- colorRampPalette(c("green", "yellow", "red"))(100)
+plot(fcover_diff, col = cldiff)
+
+# in red we observe the maximum differece, the areas where we had the greatest loss in vegetation cover.
+
+#export in PNG format
+png(file="outputs/FCOVER_difference_2020-2021.png", units="cm", width=25, height=30, res=600)
+plot(fcover_diff, col = cldiff)
+dev.off()
+
 
 # let's see if the situation changed in summer 2022
 # using data from the beginning of august     # c_gls_FCOVER300-RT1_202208100000_GLOBE_OLCI_V1.1.2.nc    #data from 01/08/2022 to 10/08/2022
@@ -98,8 +118,14 @@ dev.off()
 
 # plotting the frequency distribution of FCOVER values using histograms
 par(mfrow=c(1,2))
-hist(fcover_or$AUG_2020, xlab = "FCOVER values in 2020", ylab = "frequency", xlim = c(0, 1), ylim = c(0, 20000))
-hist(fcover_or$AUG_2021, xlab = "FCOVER values in 2021", ylab = "frequency", xlim = c(0, 1), ylim = c(0, 20000))
+hist(fcover_or$AUG_2020, 
+  xlab = "FCOVER values in 2020", 
+  ylab = "frequency", 
+  xlim = c(0, 1), ylim = c(0, 20000))
+hist(fcover_or$AUG_2021, 
+  xlab = "FCOVER values in 2021", 
+  ylab = "frequency", 
+  xlim = c(0, 1), ylim = c(0, 20000))
 dev.off()
 
 # export as PNG
@@ -109,8 +135,10 @@ hist(fcover_or$AUG_2020, xlab = "FCOVER values in 2020", ylab = "frequency", xli
 hist(fcover_or$AUG_2021, xlab = "FCOVER values in 2021", ylab = "frequency", xlim = c(0, 1), ylim = c(0, 20000))
 dev.off()
 
-# regression line
-plot(fcover_or$AUG_2020, fcover_or$AUG_2021, pch =20, col = "blue", xlab = "FCOVER in 2020", ylab = "FCOVER in 2021")
+# scatterplot
+plot(fcover_or$AUG_2020, fcover_or$AUG_2021, 
+  pch =20, col = "blue", 
+  xlab = "FCOVER in 2020", ylab = "FCOVER in 2021")
 abline(0,1, col="red")
 dev.off()
 
@@ -123,29 +151,15 @@ dev.off()
 # we can have the frequency and regression lines all together automatically with the function pairs()
 pairs(fcover_or)
 
-# 
-summary (fcover_or$AUG_2020)
-# calculate the difference between 2020 and 2021
-fcover_diff <- oristano20 - oristano21
-cldiff <- colorRampPalette(c("green", "yellow", "red"))(100)
-plot(fcover_diff, col = cldiff)
 
-# in red we observe the maximum differece, the areas where we had the greatest loss in vegetation cover.
-
-#export in PNG format
-png(file="outputs/FCOVER_difference_2020-2021.png", units="cm", width=25, height=30, res=600)
-plot(fcover_diff, col = cldiff)
-dev.off()
-
-
-##### quantitative analysis of the loss in vegtation cover ####
+##### quantitative analysis of the loss in vegetation cover ####
 # unsupervised classification
 
 aug20 <- unsuperClass(oristano20, nClasses=2)
 aug20     
-#see the details -> we have only 2 values now 
-# value 2: low vegetation cover 
-# value 1: high vegetation cover
+#see the details -> we have only 2 classes now 
+# class 2: low vegetation cover 
+# class 1: high vegetation cover
 plot(aug20$map)
 
 aug21 <- unsuperClass(oristano21, nClasses=2)
@@ -174,8 +188,8 @@ dev.off()
 # calculate the frequencies of our map for august 2020
 freq(aug20$map)
 aug20       #observe ncell to have the total number of pixels
-#1 = 54975       # high vegetation land
-#2 = 21619       # low vegetation land
+#class 1 = 54975       # high vegetation land
+#class 2 = 21619       # low vegetation land
 # NA = 24878     # the sea
 # total = ncell-NA = 101472 - 24878 = 76594
 
@@ -183,13 +197,13 @@ aug20       #observe ncell to have the total number of pixels
 total2020 <- 76594 #the total amount of pixels
 
 # compute percentage of land with different vegetation cover
-propburned20 <- 21619/total2020
-propveg20 <- 54975/total2020
+propburned20 <- 21619/total2020  # class 2
+propveg20 <- 54975/total2020     # class 1
 
 propburned20
-# 0.2822545 --> 28%         # % of low vegtation
+# 0.2822545 --> 28%         # 2 -> % of low vegtation
 propveg20
-# 0.7177455 --> 72%         # % of high vegetation
+# 0.7177455 --> 72%         # 1 -> % of high vegetation
 
 # building a dataframe with type of cover and proportion of pixels
 cover <- c("Vegetation", "No vegetation")
@@ -216,8 +230,8 @@ aug21
 total2021 <- 71261
 
 # compute percentage of land with different vegetation cover
-propburned21 <- 44594/total2021
-propveg21 <- 26667/total2021
+propburned21 <- 44594/total2021     #class 2 
+propveg21 <- 26667/total2021        #class 1
 
 propburned21
 # 0.6257841 = 63%
@@ -234,8 +248,10 @@ proportion2021
 ggplot(proportion2021, aes(x=cover, y=prop2021, color=cover)) + geom_bar(stat="identity", fill="white")
 
 # put the 2 histograms together using Patchwork package
-h2020 <- ggplot(proportion2020, aes(x=cover, y=prop2020, color=cover)) + geom_bar(stat="identity", fill="white") + ylim(0,1)
-h2021 <- ggplot(proportion2021, aes(x=cover, y=prop2021, color=cover)) + geom_bar(stat="identity", fill="white") + ylim(0,1)
+h2020 <- ggplot(proportion2020, aes(x=cover, y=prop2020, color=cover)) + 
+         geom_bar(stat="identity", fill="white") + ylim(0,1)
+h2021 <- ggplot(proportion2021, aes(x=cover, y=prop2021, color=cover)) + 
+         geom_bar(stat="identity", fill="white") + ylim(0,1)
 h2020 + h2021
 
 # to do the same thing we can also use the function grid.arrange from gridExtra package
