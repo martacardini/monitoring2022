@@ -60,6 +60,19 @@ extor <- c(8.2, 9.2, 39.7, 40.6)
 oristano21 <- crop(fcover_sar21, extor)
 plot(oristano21)
 
+#plot the 2 maps together
+par(mfrow = c(2,1))
+plot(oristano20, main = ("FCOVER in august 2020"))
+plot(oristano21, main = ("FCOVER in august 2021"))
+dev.off()
+
+# export it in PNG format in the output folder
+png(file="outputs/FCOVER_Oristano_20-21_plot.png", units="cm", width=20, height=30, res=600)
+par(mfrow = c(2,1))
+plot(oristano20, main = ("FCOVER in august 2020"))
+plot(oristano21, main = ("FCOVER in august 2021"))
+dev.off()
+
 # make a ggplot using viridis to change the colors
 p1 <- ggplot(data = oristano20) + 
 geom_raster (data = oristano20, mapping = aes(x=x, y=y, fill = Fraction.of.green.Vegetation.Cover.333m )) + 
@@ -137,8 +150,8 @@ dev.off()
 
 # scatterplot
 plot(fcover_or$AUG_2020, fcover_or$AUG_2021, 
-  pch =20, col = "blue", 
-  xlab = "FCOVER in 2020", ylab = "FCOVER in 2021")
+    pch =20, col = "blue", 
+    xlab = "FCOVER in 2020", ylab = "FCOVER in 2021")
 abline(0,1, col="red")
 dev.off()
 
@@ -263,7 +276,6 @@ h2020 + h2021
 dev.off()
 
 
-
 ##### Analysis of Land surface temperature - LST - during the fires
 
 # using Land Surface Temperature - 10-daily LST Daily Cycle Global V1 from Copernicus
@@ -313,11 +325,11 @@ dev.off()
 # ggplot the images:
 # 2020
 pt1 <- ggplot() + geom_raster (LST20_or, mapping=aes(x=x, y=y, fill=Fraction.of.Valid.Observations )) + 
-scale_fill_viridis( option = "magma") + ggtitle ("LST in 2020")
+       scale_fill_viridis( option = "magma") + ggtitle ("LST in 2020")
 
 # 2021
 pt2 <- ggplot() + geom_raster (LST21_or, mapping=aes(x=x, y=y, fill=Fraction.of.Valid.Observations )) + 
-scale_fill_viridis( option = "magma") + ggtitle ("LST in 2021")
+       scale_fill_viridis( option = "magma") + ggtitle ("LST in 2021")
 
 #plot the 2 images together
 pt1/pt2
@@ -338,6 +350,12 @@ dev.off()
 # difference 2020 vs 2021
 diff_LST <- LST20_or - LST21_or
 plot(diff_LST, col = cldiff, main = "Difference in LST - 2020-2021")
+
+#export as PNG file
+png(file="outputs/LST_diff_2020-2021.png", units="cm", width=40, height=40, res=600)
+diff_LST <- LST20_or - LST21_or
+plot(diff_LST, col = cldiff, main = "Difference in LST - 2020-2021")
+dev.off()
 
 # we observe that the maximum difference corresponds to the area of the Montiferru forest
 
