@@ -139,7 +139,7 @@ fcover_raster <- lapply(fcover_list, raster)
 # A RasterStack is a collection of RasterLayer objects with the same spatial extent and resolution
 fcover_stack <- stack(fcover_raster)
 
-#crop the extension of Oristanese region
+# crop the extension of Oristanese region
 fcover_or <- crop(fcover_stack, extor)
 fcover_or 
 # rename the layers 
@@ -156,7 +156,7 @@ dev.off()
 
 # plotting the frequency distribution of FCOVER values in 2020 and 2021 using histograms
 par(mfrow=c(1,2))
-hist(fcover_or$AUG_2020, 
+hist(fcover_or$AUG_2020,            # using $ operator to extract the layer AUG_2020
   xlab = "FCOVER values in 2020", 
   ylab = "frequency", 
   xlim = c(0, 1), ylim = c(0, 20000))
