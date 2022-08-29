@@ -1,0 +1,280 @@
+\documentclass{beamer}
+\usepackage{listings}
+\usefonttheme{structurebold}
+\usepackage{graphicx}
+
+
+\title{R project presentation}
+\subtitle{Monitoring Ecosystem Changes and Functioning exam}
+\institute{Alma Mater Studiorum - Università di Bologna}
+\author{Marta Cardini}
+\date{August 30, 2022}
+
+
+\begin{document}
+
+\maketitle
+
+\AtBeginSection[]{
+\begin{frame}
+\frametitle{Contents}
+\tableofcontents[currentsection]
+\end{frame}
+}
+
+
+% slide 1
+\begin{frame}
+\frametitle{Aim of the project}
+
+The aim of this project is to investigate on the impacts of the wildfires that happened in Sardinia, in the Montiferru region, during summer 2021.\\
+To do that, I used data from Copernicus Global Land Service, in particular: 
+\begin{itemize}
+    \item Fraction of Vegetation Cover (FCOVER);
+    \item Land Surface Temperature (LST); 
+\end{itemize}
+for August 2020 and August 2021. \\
+\bigskip
+I analysed data from both years to see how the wildfires impacted these indices.
+\end{frame}
+
+\section{FCOVER}
+\subsection{Explaination of the index}
+
+\begin{frame}{The FCOVER index}{\thesection \, \secname}
+Fraction of Vegetation Cover (FCOVER) corresponds to:
+\begin{itemize}
+    \item The fraction of ground covered by green vegetation;
+    \item The spatial extent of the vegetation;
+    \item The vegetation amount.
+\end{itemize}
+\bigskip
+Data downloaded from Copernicus Global Land Service: \\ FCOVER 300m V1 - Sentinel-3/OLCI, PROBA-V.
+\end{frame}
+
+%3
+\subsection{Analysis} 
+
+\begin{frame}{FCOVER analysis}{\thesection \, \secname}
+I started by analysing the FCOVER data using R.
+  \bigskip
+    \begin{columns}
+    \begin{column}{0.5\textwidth}
+    \begin{block}{R Code}
+    \bigskip
+    FCOVER data from 11/08/2020 to 20/08/2020:
+    \includegraphics[width=1.1\textwidth]{oristano20_code.png}
+    FCOVER data from 11/08/2021 to 20/08/2021
+    \includegraphics[width=1.1\textwidth]{oristano21_code.png}
+    \end{block}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+    \includegraphics[width=0.9\textwidth]{FCOVER_Oristano_20-21_plot.png}
+    \end{column}
+    \end{columns}
+\end{frame}
+
+% 4 
+\begin{frame}{FCOVER analysis}{\thesection \, \secname}
+\bigskip
+Plotting the FCOVER images from 2020 and 2021 together using ggplot.
+
+ \bigskip
+    \begin{columns}
+    \begin{column}{0.5\textwidth}
+    \begin{block}{R Code}
+    \bigskip
+    \includegraphics[width=1.1\textwidth]{ggplot_fcover_20-21.png}
+    \end{block}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+    \includegraphics[width=1\textwidth]{outputs/FCOVER_Oristano_20-21.png}
+    \end{column}
+    \end{columns}
+    
+\end{frame}
+
+%5
+\begin{frame}{Difference 2020 - 2021}{\thesection \, \secname}
+\bigskip
+Measure of the difference in FCOVER from 2020 to 2021.
+ \bigskip
+    \begin{columns}
+    \begin{column}{0.5\textwidth}
+    \begin{block}{R Code}
+    \bigskip
+    \includegraphics[width=1.1\textwidth]{diff.png}
+    \end{block}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+    \includegraphics[width=1\textwidth]{outputs/FCOVER_difference_2020-2021.png}
+    \end{column}
+    \end{columns}
+In red we observe the maximum difference between the 2 years.
+\end{frame}
+
+%6
+\begin{frame}{Summer 2022}{\thesection \, \secname}
+
+Did the situation change from 2021 to 2022? \\
+I used FCOVER data from from 01/08/2022 to 10/08/2022.
+ \bigskip
+    \begin{columns}
+    \begin{column}{0.5\textwidth}
+    \begin{block}{R Code}
+    \bigskip
+    \includegraphics[width=1.1\textwidth]{2022.png}
+    \end{block}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+    \includegraphics[width=1\textwidth]{outputs/FCOVER_Oristano_20-21-22.png}
+    \end{column}
+    \end{columns}
+
+\end{frame}
+
+%7
+\begin{frame}{Frequency distribution}{\thesection \, \secname}
+    Frequency distribution of FCOVER values using histograms.
+    \bigskip
+    \begin{columns}
+    \begin{column}{0.5\textwidth}
+    \begin{block}{R Code}
+    \bigskip
+    \includegraphics[width=1.1\textwidth]{hist_fcover.png}
+    \end{block}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+    \includegraphics[width=1\textwidth]{outputs/FCOVER_frequencies_2020-2021.png}
+    \end{column}
+    \end{columns}
+\end{frame}
+
+%8
+\begin{frame}{Scatterplot}{\thesection \, \secname}
+The scatterplot of the FCOVER values.
+    \bigskip
+    \begin{columns}
+    \begin{column}{0.5\textwidth}
+    \begin{block}{R Code}
+    \bigskip
+    \includegraphics[width=1.1\textwidth]{scatterplot_fcover.png}
+    \end{block}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+    \includegraphics[width=1\textwidth]{outputs/FCOVER_scatterplot_2020-2021.png}
+    \end{column}
+    \end{columns}
+    
+\end{frame}
+
+% 9
+\begin{frame}{Unsupervised classification}{\thesection \, \secname}
+Quantitative analysis of the loss in vegetation cover. \\
+Proportions for each type of cover.
+  \bigskip
+    \begin{columns}
+    \begin{column}{0.5\textwidth}
+    \begin{block}{R Code}
+    \bigskip
+    \includegraphics[width=1.1\textwidth]{unsuperclass.png}
+    \end{block}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+    \includegraphics[width=1.1\textwidth]{outputs/Proportions_land20-21.png}
+    \end{column}
+    \end{columns}
+    
+\end{frame}
+
+\section{LST}
+% 10
+\subsection{Explaination of the index}
+\begin{frame}{The LST index}{\thesection \, \secname}
+The Land Surface Temperature (LST) is the radiative skin
+temperature of the land surface. \\
+LST is a mixture of vegetation and bare soil temperatures. It shows quick variation.\\
+Its estimation further depends on the albedo, the vegetation cover and the soil moisture.\\
+LST influences the air temperature.\\
+\bigskip
+Using 10-daily LST Daily Cycle Global V1 from Copernicus Global Land Service.
+
+\end{frame}
+%11
+\subsection{Analysis}
+\begin{frame}{LST analysis}{\thesection \, \secname}
+Import the LST data from 21/07/2020 to 31/07/2020.
+\includegraphics[width=1.1\textwidth]{lst20.png}\\
+\bigskip
+And the data from the same period in 2021.
+\includegraphics[width=1.1\textwidth]{lst21.png}
+    
+\end{frame}
+
+%12
+\begin{frame}{Plotting the images with ggplot}{\thesection \, \secname}
+Visualise the LST data using ggplot.
+ \bigskip
+    \begin{columns}
+    \begin{column}{0.5\textwidth}
+    \begin{block}{R Code}
+    \bigskip
+    \includegraphics[width=1.1\textwidth]{ggplot_lst.png}
+    \end{block}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+    \includegraphics[width=0.7\textwidth]{outputs/LST_2020-2021.png}
+    \end{column}
+    \end{columns}
+\end{frame}
+
+%13
+\begin{frame}{Difference in LST 2020-2021}{\thesection \, \secname}
+
+Measure the difference in LST from 2020 to 2021
+    \begin{columns}
+    \begin{column}{0.5\textwidth}
+    \begin{block}{R Code}
+    \bigskip
+    \includegraphics[width=1.1\textwidth]{diff_lst.png}
+    \end{block}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+    \includegraphics[width=1\textwidth]{outputs/LST_diff_2020-2021.png}
+    \end{column}
+    \end{columns}
+In red the maximum difference, corresponding to the area of Montiferru.
+\end{frame}
+
+%14
+\begin{frame}{LST data distribution}{\thesection \, \secname}
+    \begin{columns}
+    \begin{column}{0.5\textwidth}
+    \begin{block}{R Code}
+        \bigskip
+    \includegraphics[width=1.1\textwidth]{outputs/hist_lst.png}
+    \end{block}
+    \begin{block}{Histogram}
+     \includegraphics[width=1\textwidth]{outputs/LST_frequencies_2020-2021.png}
+    \end{block}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+    \begin{block}{R code}
+        \bigskip
+      \includegraphics[width=1.1\textwidth]{outputs/scatt_lst.png}
+    \end{block}
+   \begin{block}{Scatterplot}
+     \includegraphics[width=1\textwidth]{outputs/LST_scatterplot_2020-2021.png}
+      \end{block}
+    \end{column}
+    \end{columns}
+    
+\end{frame}
+
+\begin{frame}
+\centering
+\textbf{Thank you for your attention!}
+    
+\end{frame}
+
+\end{document}
