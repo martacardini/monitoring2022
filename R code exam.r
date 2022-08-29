@@ -311,7 +311,7 @@ dev.off()
 
 ##### Analysis of Land surface temperature - LST - during the fires
 
-# using Land Surface Temperature - 10-daily LST Daily Cycle Global V1 from Copernicus
+# using Land Surface Temperature - 10-daily LST Daily Cycle Global V1 from Copernicus - 5km 
 
 # c_gls_LST10-DC_202007210000_GLOBE_GEO_V1.2.1 data from 21/07/2020 to 31/07/2020
 # c_gls_LST10-DC_202107210000_GLOBE_GEO_V2.0.1 data from 21/07/2021 to 31/07/2021   # part of the period in which the Montiferru forest was burning
