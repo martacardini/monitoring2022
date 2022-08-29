@@ -46,7 +46,7 @@ sum2020 <- raster ("c_gls_FCOVER300-RT2_202010200000_GLOBE_OLCI_V1.1.1.nc")  # c
 
 # visualize the imported image
 # plot(sum2020)  # the FCOVER at global scale in 2020
-dev.off()
+# dev.off()
 
 # crop the extension of Sardinia using the crop() function
 # longitude from 7 to 11
@@ -189,7 +189,7 @@ pairs(fcover_or)
 
 
 ##### quantitative analysis of the loss in vegetation cover ####
-# unsupervised classification
+# unsupervised classification 
 # using the function unsuperClass from RStoolbox package --> for Raster data
 
 aug20 <- unsuperClass(oristano20, nClasses=2)
@@ -420,15 +420,14 @@ dev.off()
 
 ## We can also import the files all together using list.files
 # LST_list <- list.files(pattern = "LST")
-# LST_raster <- lapply (LST_list, raster)
-# LST_stack <- stack(LST_raster)
+# LST_raster <- lapply (LST_list, raster) # apply raster function to all the files in the list
+# LST_stack <- stack(LST_raster) # make a RasterStack
 # LST_stack
 
-# LST_or <- crop(LST_stack, extor)
-# names(LST_or) <- c("AUG_2020", "AUG_2021")
+# LST_or <- crop(LST_stack, extor)  # crop the stack to the extension of the area under study
+# names(LST_or) <- c("AUG_2020", "AUG_2021") # change the names of the layers of the stack
 
 ## stats
 # plot(LST_or$AUG_2020, LST_or$AUG_2021)
-# pairs(LST_or)
-
+# pairs(LST_or)  
 ####### END
