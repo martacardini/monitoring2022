@@ -45,7 +45,7 @@ setwd("C:/lab/exam")
 sum2020 <- raster ("c_gls_FCOVER300-RT2_202010200000_GLOBE_OLCI_V1.1.1.nc")  # create a RasterLayer
 
 # visualize the imported image
-plot(sum2020)  # the FCOVER at global scale in 2020
+# plot(sum2020)  # the FCOVER at global scale in 2020
 dev.off()
 
 # crop the extension of Sardinia using the crop() function
@@ -173,17 +173,15 @@ hist(fcover_or$AUG_2020, xlab = "FCOVER values in 2020", ylab = "frequency", xli
 hist(fcover_or$AUG_2021, xlab = "FCOVER values in 2021", ylab = "frequency", xlim = c(0, 1), ylim = c(0, 20000))
 dev.off()
 
-# make a scatterplot with the regression line
+# make a scatterplot 
 plot(fcover_or$AUG_2020, fcover_or$AUG_2021, 
     pch =20, col = "blue", 
     xlab = "FCOVER in 2020", ylab = "FCOVER in 2021")
-abline(0,1, col="red")
 dev.off()
 
 #export as PNG
 png(file="outputs/FCOVER_scatterplot_2020-2021.png", units="cm", width=40, height=40, res=600)
 plot(fcover_or$AUG_2020, fcover_or$AUG_2021, pch =20, col = "blue", xlab = "FCOVER in 2020", ylab = "FCOVER in 2021")
-abline(0,1, col="red")
 dev.off()
 
 # we can have the frequency and regression lines all together automatically with the function pairs()
@@ -316,6 +314,7 @@ dev.off()
 # c_gls_LST10-DC_202007210000_GLOBE_GEO_V1.2.1 data from 21/07/2020 to 31/07/2020
 # c_gls_LST10-DC_202107210000_GLOBE_GEO_V2.0.1 data from 21/07/2021 to 31/07/2021   # part of the period in which the Montiferru forest was burning
 
+
 # import the data from 2020
 LST20 <- raster("c_gls_LST10-DC_202007210000_GLOBE_GEO_V1.2.1.nc")
 
@@ -408,16 +407,28 @@ hist(LST20_or, xlab = "LST values in 2020", ylab = "frequency", xlim = c(0.5, 1)
 hist(LST21_or, xlab = "LST values in 2021", ylab = "frequency", xlim = c(0.5, 1), ylim = c(0, 300))
 dev.off()
 
-# compute scatterplot and regression line
+# compute scatterplot 
 plot(LST20_or, LST21_or, pch =19, cex = 1.5, col = "blue", xlab = "LST in 2020", ylab = "LST in 2021")
-abline(0,1, col="red")
 dev.off()
 
 # export as PNG
 png(file="outputs/LST_scatterplot_2020-2021.png", units="cm", width=30, height=30, res=600)
 plot(LST20_or, LST21_or, pch =19, cex = 1.5, col = "blue", xlab = "LST in 2020", ylab = "LST in 2021")
-abline(0,1, col="red")
 dev.off()
 
+
+
+## We can also import the files all together using list.files
+# LST_list <- list.files(pattern = "LST")
+# LST_raster <- lapply (LST_list, raster)
+# LST_stack <- stack(LST_raster)
+# LST_stack
+
+# LST_or <- crop(LST_stack, extor)
+# names(LST_or) <- c("AUG_2020", "AUG_2021")
+
+## stats
+# plot(LST_or$AUG_2020, LST_or$AUG_2021)
+# pairs(LST_or)
 
 ####### END
