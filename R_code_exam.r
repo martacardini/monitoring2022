@@ -5,7 +5,7 @@
 # in this project I want to assess how the vegetation cover in the affected area was influenced by that.
 # I used data downloaded from the Copernicus Global Land Service          # https://land.copernicus.eu/global/
 
-# Install the  the packages needed for the analysis
+# Install the packages needed for the analysis
 
 # install.packages("raster")
 # install.packages("ncdf4") 
@@ -45,8 +45,8 @@ setwd("C:/lab/exam")
 sum2020 <- raster ("c_gls_FCOVER300-RT2_202010200000_GLOBE_OLCI_V1.1.1.nc")  # create a RasterLayer
 
 # visualize the imported image
-# plot(sum2020)  # the FCOVER at global scale in 2020
-# dev.off()
+plot(sum2020)  # the FCOVER at global scale in 2020
+dev.off()
 
 # crop the extension of Sardinia using the crop() function
 # longitude from 7 to 11
@@ -88,6 +88,7 @@ plot(oristano21, main = ("FCOVER in august 2021"))
 dev.off()
 
 # make a ggplot and use the package Viridis to change the colors
+# Viridis palettes are colorblind friendly
 
 # ggplot 2020 data, assign it to the object p1
 p1 <- ggplot(data = oristano20) + 
@@ -119,7 +120,7 @@ plot(fcover_diff, col = cldiff)
 
 # in red we observe the maximum differece, the areas where we had the greatest loss in vegetation cover.
 
-#export in PNG format
+# export in PNG format
 png(file="outputs/FCOVER_difference_2020-2021.png", units="cm", width=25, height=30, res=600)
 plot(fcover_diff, col = cldiff)
 dev.off()
